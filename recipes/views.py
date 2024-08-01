@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 
 def home(request):
-    return HttpResponse('UMA LINDA STRING')
+    return render(request, 'global/home.html')
 
 
 def contato(request):
