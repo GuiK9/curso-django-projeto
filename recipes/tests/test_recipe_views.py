@@ -72,3 +72,29 @@ class RecipeViewsTest(RecipeTestBase):
         content = response.content.decode('utf-8')
 
         self.assertIn(needed_title, content)
+
+    def test_recipe_home_template_dont_load_recipes_not_published(self):
+        """Test recipe is_published false don't show"""
+
+        self.make_recipe(is_published=False)
+
+        response = self.client.get(reverse('recipes:home'))
+        content = response.content.decode('utf-8')
+
+        self.assertIn('No recipes found here', content)
+
+    def test_recipe_category_template_dont_load_recipes_not_published(self):
+        """Test recipe is_published false don't show"""
+
+        recipe = self.make_recipe(is_published=False)
+        response = self.client.get(reverse('recipes:category', args=(recipe.category.id,)))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_recipe_detail_template_dont_load_recipe_not_published(self):
+        """Test recipe is_published false don't show"""
+
+        recipe = self.make_recipe(is_published=False)
+        response = self.client.get(reverse('recipes:recipe', args=(recipe.id,)))
+
+        self.assertEqual(response.status_code, 404)
