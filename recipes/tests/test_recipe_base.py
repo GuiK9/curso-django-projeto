@@ -61,4 +61,3 @@ class RecipeTestBase(TestCase):
             preparation_steps_is_html=preparation_steps_is_html,
             is_published=is_published,
         )
-
