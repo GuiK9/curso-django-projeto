@@ -66,9 +66,9 @@ class RecipeViewsTest(RecipeTestBase):
                 'recipes:recipe',
                 kwargs={
                     'id': 1,
-                    }
-                )
+                }
             )
+        )
         content = response.content.decode('utf-8')
 
         self.assertIn(needed_title, content)
@@ -87,7 +87,8 @@ class RecipeViewsTest(RecipeTestBase):
         """Test recipe is_published false don't show"""
 
         recipe = self.make_recipe(is_published=False)
-        response = self.client.get(reverse('recipes:category', args=(recipe.category.id,)))
+        response = self.client.get(
+            reverse('recipes:category', args=(recipe.category.id,)))
 
         self.assertEqual(response.status_code, 404)
 
@@ -95,6 +96,19 @@ class RecipeViewsTest(RecipeTestBase):
         """Test recipe is_published false don't show"""
 
         recipe = self.make_recipe(is_published=False)
-        response = self.client.get(reverse('recipes:recipe', args=(recipe.id,)))
+        response = self.client.get(
+            reverse('recipes:recipe', args=(recipe.id,)))
 
+        self.assertEqual(response.status_code, 404)
+
+    def test_recipe_search_load_uses_correct_view_function(self):
+        resolved = resolve(reverse('recipes:search'))
+        self.assertIs(resolved.func, views.search)
+
+    def test_recipe_search_loads_correct_template(self):
+        response = self.client.get(reverse('recipes:search') + '?q=teste')
+        self.assertTemplateUsed(response, 'recipes/pages/search.html')
+
+    def test_recipe_search_raises_404_if_no_search_term(self):
+        response = self.client.get(reverse('recipes:search'))
         self.assertEqual(response.status_code, 404)
