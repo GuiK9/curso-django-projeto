@@ -23,15 +23,17 @@ class RecipeSearchlTest(RecipeTestBase):
         self.assertIn(
             'search for &quot;&lt;teste&gt;&quot;',
             response.content.decode('utf-8')
-            )
+        )
 
     def test_recipe_search_can_find_recipe_by_title(self):
         title1 = 'this is recipe one'
         title2 = 'this is recipe two'
 
-        self.make_recipe(slug='one', title=title1, author_data={'username': 'one'})
+        self.make_recipe(slug='one', title=title1,
+                         author_data={'username': 'one'})
 
-        self.make_recipe(slug='two', title=title2, author_data={'username': 'two'})
+        self.make_recipe(slug='two', title=title2,
+                         author_data={'username': 'two'})
 
         url = reverse('recipes:search')
 
