@@ -2,6 +2,7 @@ import math
 
 
 def make_pagination_range(page_range, qty_pages, current_page):
+    current_page = int(current_page)
     middle_range = math.ceil(qty_pages / 2)
     start_range = current_page - middle_range
     stop_range = current_page + middle_range
@@ -26,6 +27,6 @@ def make_pagination_range(page_range, qty_pages, current_page):
         'total_page': total_pages,
         'start_range': start_range,
         'stop_range': stop_range,
-        'fisrt_rage': current_page > middle_range,
-        'last_page': stop_range < total_pages
+        'first_page_out_of_range': current_page > middle_range,
+        'last_page_out_of_range': stop_range < total_pages
     }
