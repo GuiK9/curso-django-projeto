@@ -4,7 +4,6 @@ from django.db.models import Q
 from recipes.models import Recipe
 from utils.pagination import make_pagination
 import os
-from django.contrib import messages
 
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
@@ -17,8 +16,6 @@ def home(request):
 
     pagination_range, page_object = make_pagination(
         request, recipes, PER_PAGE, 4)
-
-    messages.success(request, 'Epa, eu vi que você foi pesquisar algo')
 
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_object,
