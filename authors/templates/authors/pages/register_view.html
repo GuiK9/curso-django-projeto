@@ -22,7 +22,14 @@
                         {{ field.errors }}
                     </div>
                 {% endfor %}
-            
+                {% if form.errors %}
+                <div class="main-content center container">
+                    <div class="message message-error">
+                        There are errors in the for please fix them and send again
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="main-content center container">
                     <div class="form-group">
                         <button type="submit">Send</button>
