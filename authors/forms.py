@@ -29,16 +29,32 @@ def strong_password(password):
 class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        add_placeholder(self.fields['username'], 'your username')
-        add_placeholder(self.fields['email'], 'your email')
-        add_placeholder(self.fields['first_name'], 'ex: Jhonathan')
-        add_placeholder(self.fields['last_name'], 'ex: Harker')
+        add_placeholder(self.fields['username'], 'Your username')
+        add_placeholder(self.fields['email'], 'Your email')
+        add_placeholder(self.fields['first_name'], 'Ex: Jhonathan')
+        add_placeholder(self.fields['last_name'], 'Ex: Harker')
         add_attr(self.fields['username'], 'css', 'a-css-class')
+
+    first_name = forms.CharField(
+        error_messages={'required': 'Write your first name'},
+        label='First Name'
+        )
+
+    last_name = forms.CharField(
+        error_messages={'required': 'Write your last name'},
+        label='Last Name'
+        )
+
+    email = forms.EmailField(
+        error_messages={'required': 'Email is required'},
+        help_text='E-mail must be valid',
+        label='E-mail'
+        )
 
     password = forms.CharField(
         required=True,
         widget=forms.PasswordInput(attrs={
-            'placeholder': 'your password'
+            'placeholder': 'Type your password'
         }),
         error_messages={
             'required': 'Password must not be empty'
@@ -47,7 +63,8 @@ class RegisterForm(forms.ModelForm):
             'Password must have at least one uppercase letter, '
             'one lowercase letter and one numbere. The length should be at least 8 characters.'
         ),
-        validators=[strong_password]
+        validators=[strong_password],
+        label='Password'
 
     )
 
@@ -55,7 +72,11 @@ class RegisterForm(forms.ModelForm):
         required=True,
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Repeat your password'
-        })
+        }),
+        label='Password',
+        error_messages={
+            'required': 'Please repeat your password'
+        }
     )
 
     class Meta:
@@ -75,34 +96,11 @@ class RegisterForm(forms.ModelForm):
             'email': 'E-mail',
             'password': 'Password'
         }
-
-        help_texts = {
-            'email': 'E-mail must be valid',
-        }
-
         error_messages = {
             'username': {
                 'required': 'This field must not be empty',
             }
         }
-
-        widgets = {
-            'password': forms.PasswordInput(attrs={
-                'placeholder': 'Type your password here'
-            })
-        }
-
-    def clean_password(self):
-        data = self.cleaned_data.get('password')
-
-        if 'atencao' in data:
-            raise ValidationError(
-                'Não digite %(value)s no campo password',
-                code='invalid',
-                params={'value': 'atenção'}
-            )
-
-        return data
 
     def clean(self):
         cleaned_data = super().clean()
