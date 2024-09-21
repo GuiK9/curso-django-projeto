@@ -2,17 +2,17 @@
 <html lang="pt-BR">
 
 <head>
-    {% include "recipes/partials/head.html" %}
+    {% include "global/head.html" %}
     <title> {% block title %}{% endblock title %}Recipes</title>
 </head>
 <body>
-    {% include "recipes/partials/header.html" %}
-    {% include "recipes/partials/search.html" %}
+    {% include "global/header.html" %}
+    {% include "global/search.html" %}
     <main class="content-container">
         {% block content %} {% endblock content %}
-        {% include "recipes/partials/pagination.html" %}
+        {% include "global/pagination.html" %}
     </main>
-    {% include "recipes/partials/footer.html" %}
+    {% include "global/footer.html" %}
 </body>
 
 </html>
