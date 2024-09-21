@@ -35,6 +35,19 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['last_name'], 'Ex: Harker')
         add_attr(self.fields['username'], 'css', 'a-css-class')
 
+    username = forms.CharField(
+        label='Username',
+        help_text=(
+            'Username must have letters, numbers or one of those @/./+/-/_. '
+            'the length should be between 4 and 150 characters'),
+        error_messages={
+            'required': 'This field must not be empty',
+            'min_length': 'Username must have at least for characters',
+            'max_length': 'Username must have less than 150 characters',
+            },
+        min_length=4, max_length=150
+    )
+
     first_name = forms.CharField(
         error_messages={'required': 'Write your first name'},
         label='First Name'
@@ -89,18 +102,13 @@ class RegisterForm(forms.ModelForm):
             'password'
         ]
 
-        labels = {
-            'first_name': 'First Name',
-            'last_name': 'Last Name',
-            'username': 'Username',
-            'email': 'E-mail',
-            'password': 'Password'
-        }
-        error_messages = {
-            'username': {
-                'required': 'This field must not be empty',
-            }
-        }
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        exists = User.objects.filter(email=email).exists()
+        if exists:
+            raise ValidationError(
+                'User e-mail is alredy in use', code='invalid'
+            )
 
     def clean(self):
         cleaned_data = super().clean()

@@ -21,7 +21,8 @@ class AuthorRegisterFormUnitTest(TestCase):
 
     @parameterized.expand([
         ('email', 'E-mail must be valid'),
-        ('username', 'Obrigatório. 150 caracteres ou menos. Letras, números e @/./+/-/_ apenas.'),
+        ('username', 'Username must have letters, numbers or one of those @/./+/-/_. '
+            'the length should be between 4 and 150 characters'),
         ('password', 'Password must have at least one uppercase letter, '
             'one lowercase letter and one numbere. The length should be at least 8 characters.'),
     ])
@@ -70,3 +71,27 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         response = self.client.post(url, data=self.form_data, follow=True)
         self.assertIn(msg, response.content.decode('utf-8'))
         self.assertIn(msg, response.context['form'].errors.get(field))
+
+    def test_username_field_min_length_should_be_4(self):
+        self.form_data['username'] = 'joa'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        msg = 'Username must have at least for characters'
+
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('username'))
+
+    def test_username_field_min_length_should_be_less_than_150_characters(self):
+        def characters(qty):
+            string = []
+            for i in range(qty):
+                string.append(f'{i}')
+            return ''.join(string)
+
+        self.form_data['username'] = characters(qty=150)
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        msg = 'Username must have less than 150 characters'
+
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('username'))
