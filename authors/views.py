@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.shortcuts import redirect, render
 
+from authors.forms.recipe_form import AuthorRecipeForm
 from recipes.models import Recipe
 from .forms import RegisterForm, LoginForm
 from django.contrib import messages
@@ -98,14 +99,20 @@ def dashboard_recipe_edit(request, id):
         is_published=False,
         author=request.user,
         pk=id
-    )
+    ).first()
+
     if not recipe:
         raise Http404()
+
+    form = AuthorRecipeForm(
+        request.POST or None,
+        instance=recipe
+    )
 
     return render(
         request,
         'authors/pages/dashboard_recipe.html',
         context={
-            'recipe': recipe,
+            'form': form,
         }
     )
