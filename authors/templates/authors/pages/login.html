@@ -10,5 +10,8 @@
 
     {% include "global/message.html" %}
 
-    {% include "partials/form.html" %}
+    {% if not user.is_authenticated %}
+        {% include "partials/form.html" %}
+    {% endif %}
+
 {% endblock content %}
