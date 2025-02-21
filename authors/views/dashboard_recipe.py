@@ -9,16 +9,36 @@ from django.urls import reverse
 
 
 class DashboardRecipe(View):
-    def get(self, request, id):
-        print('estou aqui na classe cbv')
-        recipe = Recipe.objects.filter(
-            is_published=False,
-            author=request.user,
-            pk=id
-        ).first()
+    def get_recipe(self, id):
+        if id:
+            recipe = Recipe.objects.filter(
+                is_published=False,
+                author=self.request.user,
+                pk=id
+            ).first()
 
-        if not recipe:
-            raise Http404()
+            if not recipe:
+                raise Http404()
+
+        return recipe
+
+    def render_recipe(self, form):
+        return render(
+            self.request,
+            'authors/pages/dashboard_recipe.html',
+            context={
+                'form': form,
+            }
+        )
+
+    def get(self, request, id):
+        recipe = self.get_recipe(id)
+        form = AuthorRecipeForm(instance=recipe)
+
+        return self.render_recipe(form)
+
+    def post(self, request, id):
+        recipe = self.get_recipe(id)
 
         form = AuthorRecipeForm(
             data=request.POST or None,
@@ -37,10 +57,4 @@ class DashboardRecipe(View):
             messages.success(request, 'Sua receita foi salva com sucesso!')
             return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
 
-        return render(
-            request,
-            'authors/pages/dashboard_recipe.html',
-            context={
-                'form': form,
-            }
-        )
+        return self.render_recipe(form)
